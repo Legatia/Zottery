@@ -1,0 +1,270 @@
+.purchase-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.page-header p {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.purchase-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.info-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.info-card h3 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: var(--primary);
+}
+
+.purchase-steps {
+  list-style: none;
+  counter-reset: step-counter;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.purchase-steps li {
+  position: relative;
+  padding-left: 40px;
+  counter-increment: step-counter;
+}
+
+.purchase-steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.purchase-steps li strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.purchase-steps li p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.prize-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prize-tier {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.tier-matches {
+  font-weight: 600;
+}
+
+.tier-prize {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.prize-note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.lottery-address-section {
+  margin: 40px 0;
+}
+
+.lottery-address-section h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.address-card {
+  background: var(--bg-secondary);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.address-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.address-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.address {
+  flex: 1;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.copy-button {
+  background: var(--primary);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.copy-button:hover {
+  background: var(--primary-dark);
+}
+
+.address-info {
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.address-info p {
+  margin: 8px 0;
+}
+
+.info-note {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.warning-section {
+  margin: 40px 0;
+}
+
+.warning-section h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.warning-section p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.instructions-section {
+  margin: 40px 0;
+}
+
+.instructions-section h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  font-size: 18px;
+  margin: 24px 0 12px;
+}
+
+.code-block {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+
+.code-block code {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  background: transparent;
+  padding: 0;
+}
+
+.faq-section {
+  margin: 40px 0;
+}
+
+.faq-section h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.faq-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.faq-item h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.faq-item p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .purchase-info {
+    grid-template-columns: 1fr;
+  }
+
+  .address-container {
+    flex-direction: column;
+  }
+
+  .copy-button {
+    width: 100%;
+  }
+}

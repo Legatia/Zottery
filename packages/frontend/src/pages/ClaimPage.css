@@ -1,0 +1,132 @@
+.claim-page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.claim-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 32px 0;
+}
+
+.claim-form-section h2,
+.claim-info-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.claim-form {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.form-group small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.claim-form button {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+}
+
+.claim-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.production-notes {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 32px 0;
+}
+
+.production-notes h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.production-notes p {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+.production-notes ul {
+  list-style-position: inside;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.security-info {
+  margin: 40px 0;
+}
+
+.security-info h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.security-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.security-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.security-item h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.security-item p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .claim-content {
+    grid-template-columns: 1fr;
+  }
+
+  .security-grid {
+    grid-template-columns: 1fr;
+  }
+}

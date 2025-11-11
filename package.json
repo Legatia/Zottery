@@ -1,0 +1,36 @@
+{
+  "name": "zottery",
+  "version": "1.0.0",
+  "description": "Anonymous lottery system leveraging Zcash for privacy-preserving prize claims",
+  "private": true,
+  "workspaces": [
+    "packages/backend",
+    "packages/frontend",
+    "packages/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=packages/backend",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build --workspace=packages/backend",
+    "build:frontend": "npm run build --workspace=packages/frontend",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "setup:circuits": "cd circuits && ./setup.sh"
+  },
+  "keywords": [
+    "zcash",
+    "lottery",
+    "privacy",
+    "zero-knowledge",
+    "zkp",
+    "anonymous"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
+  }
+}
