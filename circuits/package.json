@@ -1,0 +1,19 @@
+{
+  "name": "@zottery/circuits",
+  "version": "1.0.0",
+  "description": "Zero-knowledge circuits for Zottery lottery claims",
+  "private": true,
+  "scripts": {
+    "compile": "bash ./compile.sh",
+    "setup": "bash ./setup.sh",
+    "test": "bash ./test.sh",
+    "clean": "rm -rf build/*.r1cs build/*.wasm build/*.zkey build/*.json"
+  },
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.3"
+  },
+  "devDependencies": {
+    "circom": "^2.1.6"
+  }
+}

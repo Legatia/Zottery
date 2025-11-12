@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import PurchasePage from './pages/PurchasePage'
-import ClaimPage from './pages/ClaimPage'
+import ClaimPageEnhanced from './pages/ClaimPageEnhanced'
 import DrawsPage from './pages/DrawsPage'
 import './App.css'
 
@@ -27,7 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/purchase" element={<PurchasePage />} />
-          <Route path="/claim" element={<ClaimPage />} />
+          <Route path="/claim" element={<ClaimPageEnhanced />} />
           <Route path="/draws" element={<DrawsPage />} />
         </Routes>
       </main>

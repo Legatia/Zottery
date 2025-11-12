@@ -39,7 +39,10 @@ async function startServer() {
 
   const ticketService = new TicketService(db, zcashService);
   const drawService = new DrawService(db);
-  const claimService = new ClaimService(db, zcashService, drawService);
+  const claimService = new ClaimService(db, zcashService, drawService, ticketService);
+
+  // Initialize claim service (loads ZKP verification key)
+  await claimService.initialize();
   console.log('✅ Business services initialized');
 
   // Create Express app

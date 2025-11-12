@@ -178,6 +178,38 @@ The application will be available at:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001
 
+### Zero-Knowledge Proof Setup (Optional but Recommended)
+
+The system works in two modes:
+
+**Development Mode** (Default):
+- Uses mock proofs for testing
+- No circuit compilation needed
+- Claims processed with basic validation
+
+**Production Mode** (Full ZKP):
+- Real cryptographic proofs
+- Complete anonymity guarantees
+- Requires circuit compilation
+
+To enable full ZKP:
+
+```bash
+cd circuits
+npm install
+./compile.sh    # Compile circuits (5-10 minutes)
+./setup.sh      # Trusted setup (10-20 minutes)
+./test.sh       # Test circuits
+
+# Deploy to backend and frontend
+cp build/verification_key.json ../packages/backend/src/circuits/
+mkdir -p ../packages/frontend/public/circuits
+cp build/claimVerifier.wasm ../packages/frontend/public/circuits/
+cp build/claimVerifier_final.zkey ../packages/frontend/public/circuits/
+```
+
+See **[ZKP_SETUP.md](./ZKP_SETUP.md)** for detailed instructions.
+
 ### Production Build
 
 ```bash
@@ -268,6 +300,20 @@ curl http://localhost:3001/api/draw/current
 
 ```
 Zottery/
+├── circuits/                 # Zero-knowledge circuits
+│   ├── claimVerifier.circom  # Main claim circuit
+│   ├── merkle.circom         # Merkle tree verification
+│   ├── matchCounter.circom   # Number matching
+│   ├── ticketHash.circom     # Hash computations
+│   ├── compile.sh            # Compilation script
+│   ├── setup.sh              # Trusted setup script
+│   ├── test.sh               # Circuit testing
+│   ├── README.md             # Circuit documentation
+│   └── build/                # Generated files (after setup)
+│       ├── claimVerifier.wasm
+│       ├── claimVerifier_final.zkey
+│       └── verification_key.json
+│
 ├── packages/
 │   ├── backend/              # Backend server
 │   │   ├── src/
@@ -277,7 +323,9 @@ Zottery/
 │   │   │   │   ├── zcash.ts  # Zcash integration
 │   │   │   │   ├── tickets.ts # Ticket management
 │   │   │   │   ├── draws.ts   # Draw execution
-│   │   │   │   └── claims.ts  # Claim processing
+│   │   │   │   ├── claims.ts  # Claim processing
+│   │   │   │   └── zkp.ts     # ZKP verification
+│   │   │   ├── circuits/     # Verification key (after setup)
 │   │   │   └── api/          # API routes
 │   │   └── package.json
 │   │
@@ -285,7 +333,11 @@ Zottery/
 │   │   ├── src/
 │   │   │   ├── App.tsx       # Main app component
 │   │   │   ├── pages/        # Page components
-│   │   │   └── services/     # API client
+│   │   │   └── services/     # API client + ZKP
+│   │   ├── public/
+│   │   │   └── circuits/     # Circuit files (after setup)
+│   │   │       ├── claimVerifier.wasm
+│   │   │       └── claimVerifier_final.zkey
 │   │   └── package.json
 │   │
 │   └── shared/               # Shared types
@@ -294,27 +346,34 @@ Zottery/
 │       └── package.json
 │
 ├── ARCHITECTURE.md           # System design docs
+├── ZKP_SETUP.md              # ZKP setup guide
 ├── package.json              # Root package
 └── README.md                 # This file
 ```
 
 ## Development Roadmap
 
-### Current Status (MVP)
+### Current Status
 
 - ✅ Backend API implementation
 - ✅ Zcash integration
-- ✅ Basic ticket purchase flow
+- ✅ Ticket purchase flow with automatic creation
 - ✅ Draw execution with VRF
-- ✅ Frontend UI
-- ⚠️ Simplified ZKP verification (mock proofs)
+- ✅ Frontend UI with all pages
+- ✅ **Full ZKP Circuit Implementation**
+  - ✅ Circom circuits (ClaimVerifier, Merkle proof, match counter)
+  - ✅ Compilation and setup scripts
+  - ✅ Backend verification with snarkjs
+  - ✅ Frontend proof generation in browser
+  - ✅ Fallback mode for development
+- ✅ Comprehensive documentation
 
 ### Next Steps
 
-1. **Zero-Knowledge Circuit Implementation**
-   - Design circom circuit for claim verification
-   - Generate proving and verification keys
-   - Integrate snarkjs for proof generation
+1. **Production Readiness**
+   - Multi-party trusted setup ceremony (≥10 participants)
+   - Security audit of circuits and implementation
+   - Performance optimization for mobile devices
 
 2. **Enhanced Features**
    - User-selected lottery numbers

@@ -51,6 +51,27 @@
   font-size: 16px;
 }
 
+.proof-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  margin: 16px 0;
+  color: var(--text);
+}
+
+.proof-progress .loading {
+  flex-shrink: 0;
+}
+
+.proof-progress span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .claim-info-section {
   display: flex;
   flex-direction: column;

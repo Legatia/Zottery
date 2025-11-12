@@ -9,14 +9,28 @@ import { v4 as uuidv4 } from 'uuid';
 import { Database } from '../database';
 import { ZcashService } from './zcash';
 import { DrawService } from './draws';
+import { ZKPService } from './zkp';
+import { TicketService } from './tickets';
 import { Claim, ZKProof, countMatches } from '@zottery/shared';
 
 export class ClaimService {
+  private zkpService: ZKPService;
+
   constructor(
     private db: Database,
     private zcash: ZcashService,
-    private drawService: DrawService
-  ) {}
+    private drawService: DrawService,
+    private ticketService: TicketService
+  ) {
+    this.zkpService = new ZKPService();
+  }
+
+  /**
+   * Initialize the claim service
+   */
+  async initialize(): Promise<void> {
+    await this.zkpService.initialize();
+  }
 
   /**
    * Submit a prize claim
@@ -172,8 +186,7 @@ export class ClaimService {
   /**
    * Verify zero-knowledge proof
    *
-   * In production, this would verify the actual ZK-SNARK proof using snarkjs.
-   * For now, we implement a simplified verification.
+   * Uses snarkjs to verify the ZK-SNARK proof cryptographically.
    */
   private async verifyZkProof(
     zkProof: ZKProof,
@@ -185,39 +198,32 @@ export class ClaimService {
     }
   ): Promise<boolean> {
     try {
-      // TODO: Implement actual ZK proof verification using snarkjs
-      // This would involve:
-      // 1. Loading the verification key
-      // 2. Parsing the proof
-      // 3. Verifying the proof against public inputs
-      //
-      // Example:
-      // const snarkjs = require('snarkjs');
-      // const vKey = await snarkjs.zKey.exportVerificationKey('circuit_final.zkey');
-      // const verified = await snarkjs.groth16.verify(vKey, publicSignals, proof);
-
-      // For now, we do basic validation
-      if (!zkProof.proof || !zkProof.publicSignals) {
+      // Validate proof structure first
+      if (!this.zkpService.validateProofStructure(zkProof)) {
+        console.error('Invalid proof structure');
         return false;
       }
 
-      // Verify public signals match expected inputs
-      // publicSignals format: [nullifier, winningNumber1, ..., winningNumber6, prizeMatches, ticketSetRoot, drawId]
-      const expectedSignals = [
-        this.hashToField(publicInputs.nullifier),
-        ...publicInputs.winningNumbers.map(n => n.toString()),
-        publicInputs.prizeMatches.toString(),
-        // ticketSetRoot would be included here in real implementation
-        publicInputs.drawId.toString(),
-      ];
+      // Get Merkle root of all tickets in this draw
+      const ticketTreeRoot = this.ticketService.calculateMerkleRoot(publicInputs.drawId);
 
-      // Basic length check
-      if (zkProof.publicSignals.length < expectedSignals.length - 1) { // -1 for ticketSetRoot
-        return false;
+      // Verify proof using ZKP service
+      const isValid = await this.zkpService.verifyClaimProof(zkProof, {
+        nullifier: publicInputs.nullifier,
+        winningNumbers: publicInputs.winningNumbers,
+        minMatches: publicInputs.prizeMatches,
+        ticketTreeRoot,
+        drawId: publicInputs.drawId,
+      });
+
+      if (isValid) {
+        const status = this.zkpService.getStatus();
+        console.log(`✅ ZK proof verified successfully (mode: ${status.mode})`);
+      } else {
+        console.error('❌ ZK proof verification failed');
       }
 
-      console.log('ZK proof validation passed (simplified)');
-      return true;
+      return isValid;
     } catch (error) {
       console.error('Error verifying ZK proof:', error);
       return false;
