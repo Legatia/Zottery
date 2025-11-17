@@ -2,114 +2,240 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
+/* Glassmorphism header with glow */
 .header {
-  background: var(--bg-secondary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  padding: 16px 0;
+  padding: 20px 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px var(--shadow);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), 0 0 40px var(--border-glow);
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
 }
 
 .logo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.02);
 }
 
 .logo h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
   margin: 0;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
 }
 
 .tagline {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
+/* Navigation with modern hover effects */
 .nav {
   display: flex;
-  gap: 24px;
+  gap: 8px;
   align-items: center;
 }
 
 .nav-link {
   font-weight: 500;
-  font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.2s;
+  font-size: 15px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: width 0.3s ease;
+  z-index: -1;
+  border-radius: 12px;
+}
+
+.nav-link:hover::before {
+  width: 100%;
 }
 
 .nav-link:hover {
-  background: var(--bg-tertiary);
-  color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 20px var(--border-glow);
+  transform: translateY(-2px);
 }
 
+.nav-link:active {
+  transform: translateY(0);
+}
+
+/* Main content area */
 .main {
   flex: 1;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 60px 32px;
+  animation: fadeIn 0.6s ease;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer with glassmorphism */
 .footer {
-  background: var(--bg-secondary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
-  padding: 24px;
+  padding: 32px 24px;
   text-align: center;
   color: var(--text-secondary);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: var(--gradient-primary);
+  opacity: 0.3;
 }
 
 .footer p {
-  margin: 8px 0;
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.footer p:first-child {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 16px;
 }
 
 .footer-note {
-  font-size: 14px;
+  font-size: 13px;
   max-width: 600px;
-  margin: 12px auto 0;
+  margin: 16px auto 0;
+  line-height: 1.6;
+  opacity: 0.8;
 }
 
+/* Responsive design */
 @media (max-width: 768px) {
+  .header {
+    padding: 16px 0;
+  }
+
   .header-content {
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .logo h1 {
+    font-size: 26px;
+  }
+
+  .tagline {
+    font-size: 11px;
   }
 
   .nav {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .nav-link {
     font-size: 14px;
-    padding: 6px 12px;
-  }
-
-  .logo h1 {
-    font-size: 24px;
+    padding: 8px 16px;
   }
 
   .main {
-    padding: 24px 16px;
+    padding: 40px 20px;
   }
+
+  .footer {
+    padding: 24px 20px;
+  }
+}
+
+/* Privacy badge effect */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.logo h1::after {
+  content: '🔒';
+  margin-left: 8px;
+  font-size: 20px;
+  animation: pulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.6));
 }
