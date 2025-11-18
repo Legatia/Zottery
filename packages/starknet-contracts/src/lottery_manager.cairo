@@ -14,6 +14,7 @@ pub mod LotteryManager {
         // Draw management
         current_draw_id: u64,
         draws: Map<u64, Draw>,
+        current_prize_pool: u256,  // Accumulated yield for next draw
 
         // Ticket tracking
         ticket_commitments: Map<u64, felt252>,  // ticket_id => commitment
@@ -34,6 +35,7 @@ pub mod LotteryManager {
     pub enum Event {
         TicketRegistered: TicketRegistered,
         DrawExecuted: DrawExecuted,
+        PrizePoolUpdated: PrizePoolUpdated,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -50,6 +52,13 @@ pub mod LotteryManager {
         pub winning_commitment: felt252,
         pub prize_pool: u256,
         pub ticket_count: u64,
+        pub timestamp: u64,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    pub struct PrizePoolUpdated {
+        pub amount_added: u256,
+        pub new_total: u256,
         pub timestamp: u64,
     }
 
@@ -114,8 +123,9 @@ pub mod LotteryManager {
             let winning_ticket_id = winning_index + 1;  // Simplified: assumes sequential IDs
             let winning_commitment = self.ticket_commitments.read(winning_ticket_id);
 
-            // Get prize pool from vault
-            let prize_pool = self._get_prize_pool();
+            // Get current prize pool and reset for next draw
+            let prize_pool = self.current_prize_pool.read();
+            self.current_prize_pool.write(0);  // Reset for next draw
 
             // Store draw result
             let draw = Draw {
@@ -166,6 +176,22 @@ pub mod LotteryManager {
 
         fn get_current_draw_id(self: @ContractState) -> u64 {
             self.current_draw_id.read()
+        }
+
+        fn add_to_prize_pool(ref self: ContractState, amount: u256) {
+            // Only vault can add to prize pool
+            let caller = get_caller_address();
+            assert(caller == self.vault.read(), 'Only vault can add');
+
+            let current_pool = self.current_prize_pool.read();
+            let new_total = current_pool + amount;
+            self.current_prize_pool.write(new_total);
+
+            self.emit(PrizePoolUpdated {
+                amount_added: amount,
+                new_total: new_total,
+                timestamp: get_block_timestamp(),
+            });
         }
     }
 

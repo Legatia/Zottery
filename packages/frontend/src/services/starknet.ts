@@ -154,6 +154,59 @@ export class StarknetService {
     return Number(leverage);
   }
 
+  async getTotalYield(): Promise<bigint> {
+    if (!this.vaultAddress) throw new Error('Vault address not configured');
+
+    const vaultContract = new Contract(
+      [], // ABI
+      this.vaultAddress,
+      this.provider
+    );
+
+    const totalYield = await vaultContract.get_total_yield();
+    return BigInt(totalYield.toString());
+  }
+
+  async getAPY(): Promise<number> {
+    if (!this.vaultAddress) throw new Error('Vault address not configured');
+
+    const vaultContract = new Contract(
+      [], // ABI
+      this.vaultAddress,
+      this.provider
+    );
+
+    const apy = await vaultContract.get_apy();
+    return Number(apy);  // In basis points (1000 = 10%)
+  }
+
+  async getDeployedCapital(): Promise<bigint> {
+    if (!this.vaultAddress) throw new Error('Vault address not configured');
+
+    const vaultContract = new Contract(
+      [], // ABI
+      this.vaultAddress,
+      this.provider
+    );
+
+    const deployed = await vaultContract.get_deployed_capital();
+    return BigInt(deployed.toString());
+  }
+
+  async getCurrentPrizePool(): Promise<bigint> {
+    if (!this.lotteryManagerAddress) throw new Error('Lottery manager address not configured');
+
+    const lotteryContract = new Contract(
+      [], // ABI
+      this.lotteryManagerAddress,
+      this.provider
+    );
+
+    const drawId = await lotteryContract.get_current_draw_id();
+    const prizePool = await lotteryContract.get_prize_pool(drawId);
+    return BigInt(prizePool.toString());
+  }
+
   // ============ LOTTERY OPERATIONS ============
 
   async registerTicket(commitment: string): Promise<{ ticketId: bigint; txHash: string }> {

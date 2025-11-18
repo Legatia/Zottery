@@ -9,6 +9,10 @@ export const VaultPage: React.FC = () => {
   const [userShares, setUserShares] = useState<bigint>(BigInt(0));
   const [totalAssets, setTotalAssets] = useState<bigint>(BigInt(0));
   const [leverage, setLeverage] = useState<number>(1);
+  const [totalYield, setTotalYield] = useState<bigint>(BigInt(0));
+  const [apy, setApy] = useState<number>(0);
+  const [deployedCapital, setDeployedCapital] = useState<bigint>(BigInt(0));
+  const [prizePool, setPrizePool] = useState<bigint>(BigInt(0));
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string>('');
 
@@ -23,15 +27,23 @@ export const VaultPage: React.FC = () => {
       const wallet = starknetService.getWallet();
       if (!wallet) return;
 
-      const [shares, assets, lev] = await Promise.all([
+      const [shares, assets, lev, yield_total, apyBps, deployed, pool] = await Promise.all([
         starknetService.getUserShares(),
         starknetService.getTotalAssets(),
         starknetService.getCurrentLeverage(),
+        starknetService.getTotalYield(),
+        starknetService.getAPY(),
+        starknetService.getDeployedCapital(),
+        starknetService.getCurrentPrizePool(),
       ]);
 
       setUserShares(shares);
       setTotalAssets(assets);
       setLeverage(lev);
+      setTotalYield(yield_total);
+      setApy(apyBps);
+      setDeployedCapital(deployed);
+      setPrizePool(pool);
     } catch (error) {
       console.error('Failed to load vault data:', error);
     }
@@ -156,6 +168,39 @@ export const VaultPage: React.FC = () => {
             <div className="stat-sublabel">
               {Number(userShares).toLocaleString()} shares
             </div>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon">📈</div>
+          <div className="stat-content">
+            <div className="stat-label">Current APY</div>
+            <div className="stat-value" style={{ color: '#10b981' }}>
+              {(apy / 100).toFixed(1)}%
+            </div>
+            <div className="stat-sublabel">Leveraged yield</div>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon">💎</div>
+          <div className="stat-content">
+            <div className="stat-label">Deployed Capital</div>
+            <div className="stat-value">
+              ${(Number(deployedCapital) / 1_000_000).toLocaleString()}
+            </div>
+            <div className="stat-sublabel">{leverage}x leveraged</div>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon">🏆</div>
+          <div className="stat-content">
+            <div className="stat-label">Prize Pool</div>
+            <div className="stat-value" style={{ color: '#8b5cf6' }}>
+              ${(Number(prizePool) / 1_000_000).toLocaleString()}
+            </div>
+            <div className="stat-sublabel">Next draw</div>
           </div>
         </div>
       </div>

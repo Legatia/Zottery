@@ -10,7 +10,11 @@ pub trait ILeveragedVault<TContractState> {
     fn total_shares(self: @TContractState) -> u256;
     fn user_shares(self: @TContractState, user: ContractAddress) -> u256;
     fn execute_strategy(ref self: TContractState);
+    fn harvest_yield(ref self: TContractState) -> u256;
     fn calculate_prize_pool(self: @TContractState) -> u256;
+    fn get_total_yield(self: @TContractState) -> u256;
+    fn get_apy(self: @TContractState) -> u256;
+    fn get_deployed_capital(self: @TContractState) -> u256;
 }
 
 #[starknet::interface]
@@ -22,6 +26,7 @@ pub trait ILotteryManager<TContractState> {
     fn get_prize_pool(self: @TContractState, draw_id: u64) -> u256;
     fn is_draw_executed(self: @TContractState, draw_id: u64) -> bool;
     fn get_current_draw_id(self: @TContractState) -> u64;
+    fn add_to_prize_pool(ref self: TContractState, amount: u256);
 }
 
 #[starknet::interface]

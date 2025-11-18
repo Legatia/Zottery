@@ -199,6 +199,47 @@ pub mod LeveragedVault {
             // prize_pool = total_yield * percentage / 100
             (total_yield * percentage.into()) / 100
         }
+
+        fn harvest_yield(ref self: ContractState) -> u256 {
+            self._only_owner();
+
+            // TODO: In production, claim rewards from actual DeFi protocols
+            // For MVP, simulate yield based on deployed capital and time
+            let deployed = self.deployed_capital.read();
+            let last_update = self.last_yield_update.read();
+            let current_time = get_block_timestamp();
+            let time_elapsed = current_time - last_update;
+
+            // Simulate 10% APY (simplified calculation)
+            // yield = deployed * 0.10 * (time_elapsed / 31536000)
+            // Using basis points to avoid decimals: 1000 bp = 10%
+            let yearly_yield = (deployed * 1000) / 10000;  // 10% of deployed
+            let yield_amount = (yearly_yield * time_elapsed.into()) / 31536000;  // Pro-rata for time
+
+            if yield_amount > 0 {
+                self._accrue_yield(yield_amount);
+
+                // Transfer yield to prize pool
+                let to_prize_pool = (yield_amount * self.prize_pool_percentage.read().into()) / 100;
+                // TODO: Call lottery_manager.add_to_prize_pool(to_prize_pool)
+            }
+
+            yield_amount
+        }
+
+        fn get_total_yield(self: @ContractState) -> u256 {
+            self.total_yield.read()
+        }
+
+        fn get_apy(self: @ContractState) -> u256 {
+            // Return APY in basis points (1000 = 10%)
+            // TODO: Calculate actual APY from strategy performance
+            1000  // 10% APY placeholder
+        }
+
+        fn get_deployed_capital(self: @ContractState) -> u256 {
+            self.deployed_capital.read()
+        }
     }
 
     #[generate_trait]

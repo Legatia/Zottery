@@ -4,6 +4,124 @@
 
 Leveraged Lottery Vaults combine DeFi yield strategies on Starknet with privacy-preserving prize claims on Zcash. Users deposit collateral, the vault takes leveraged positions, and winners claim prizes anonymously via cross-chain messaging.
 
+**Key Innovation**: Prizes come from **DeFi yield**, not ticket sales. Users keep their principal and only "risk" their yield for lottery chances.
+
+## 💰 Yield Flow (The Economic Engine)
+
+This is the core mechanism that makes Zottery sustainable and "no-loss":
+
+### Complete Yield Cycle
+
+```
+1. USER DEPOSITS
+   User deposits 1,000 USDC to vault
+   └→ Receives vault shares representing ownership
+
+2. LEVERAGE & DEPLOYMENT
+   Vault borrows 4,000 USDC from zkLend (5x leverage)
+   └→ Total deployed: 5,000 USDC
+
+3. DEFI YIELD GENERATION (Continuous)
+   5,000 USDC earns yield across strategies:
+   ├─ 40% (2,000 USDC) → Jediswap LP pools (~15% APY)
+   ├─ 40% (2,000 USDC) → zkLend lending (~8% APY)
+   └─ 20% (1,000 USDC) → Ekubo concentrated liquidity (~20% APY)
+
+   Weighted avg APY: ~13.6%
+   Annual yield on 5,000 USDC: 680 USDC
+   Monthly yield: ~56.7 USDC
+
+4. YIELD HARVESTING (Daily/Weekly)
+   Vault calls harvest_yield():
+   ├─ Claims all rewards from DeFi protocols
+   ├─ Compounds or converts to USDC
+   └─ Tracks total_yield balance
+
+5. YIELD DISTRIBUTION (Per harvest)
+   Total yield split:
+   ├─ 80% → Prize Pool (45.4 USDC/month per 1k deposit)
+   ├─ 10% → Protocol Revenue (5.7 USDC/month)
+   └─ 10% → Vault Reserves (5.7 USDC/month, safety buffer)
+
+6. PRIZE POOL GROWTH
+   Example with 100 users × 1,000 USDC:
+   ├─ Total deposits: 100,000 USDC
+   ├─ Leveraged capital: 500,000 USDC (5x)
+   ├─ Monthly yield @ 13.6% APY: ~5,667 USDC
+   ├─ To prize pool (80%): 4,534 USDC/month
+   └─ Weekly draw prize: ~1,133 USDC
+
+7. LOTTERY MECHANICS
+   ├─ 1 ticket per 100 USDC deposited
+   ├─ 100 users = 1,000 total tickets
+   ├─ Win probability: 1/1000 = 0.1%
+   └─ Expected value: 0.1% × 1,133 = 1.13 USDC
+
+8. USER ECONOMICS
+   Scenario A - Don't win lottery:
+   ├─ Deposit: 1,000 USDC
+   ├─ Yield earned: 56.7 USDC/month (minus 80% to prize)
+   ├─ User keeps: 11.3 USDC/month (20% of yield)
+   └─ Withdraw anytime: 1,000 principal + accrued share
+
+   Scenario B - Win lottery:
+   ├─ Deposit: 1,000 USDC
+   ├─ Win prize: 1,133 USDC (anonymous via Zcash)
+   ├─ Still keep: 1,000 USDC principal
+   └─ Total: 2,133 USDC (113% return!)
+
+9. NO-LOSS GUARANTEE
+   ├─ Principal always withdrawable (barring vault liquidation)
+   ├─ User "donates" 80% of their yield for lottery chance
+   ├─ Still earns 20% of yield (vs 0% in bank account)
+   └─ Potential upside: Win big prizes anonymously
+```
+
+### Yield Math Examples
+
+**Conservative Vault (2x leverage, 8% APY)**
+```
+Deposit: 10,000 USDC
+Leverage: 2x → 20,000 deployed
+Annual yield: 1,600 USDC
+Monthly yield: 133 USDC
+To prize pool: 107 USDC (80%)
+User keeps: 27 USDC (20%)
+Tickets: 100 (1 per 100 USDC)
+```
+
+**Aggressive Vault (10x leverage, 15% APY)**
+```
+Deposit: 10,000 USDC
+Leverage: 10x → 100,000 deployed
+Annual yield: 15,000 USDC
+Monthly yield: 1,250 USDC
+To prize pool: 1,000 USDC (80%)
+User keeps: 250 USDC (20%)
+Tickets: 100
+```
+
+**Prize Pool Scaling**
+```
+10 users × 1,000 USDC × 5x leverage = 50k deployed
+Monthly prize pool @ 10% APY: ~333 USDC
+
+100 users × 1,000 USDC × 5x leverage = 500k deployed
+Monthly prize pool @ 10% APY: ~3,333 USDC
+
+1,000 users × 1,000 USDC × 5x leverage = 5M deployed
+Monthly prize pool @ 10% APY: ~33,333 USDC
+```
+
+### Risk vs Reward
+
+| Leverage | APY Target | Prize Pool Multiplier | Liquidation Risk | User Type |
+|----------|------------|----------------------|------------------|-----------|
+| 1x       | 5-8%       | 1x (base)            | None            | Conservative |
+| 2x       | 8-12%      | 2x                   | Very Low        | Moderate |
+| 5x       | 10-15%     | 5x                   | Medium          | Aggressive |
+| 10x      | 12-20%     | 10x                  | High            | Degen |
+
 ## System Architecture
 
 ```
