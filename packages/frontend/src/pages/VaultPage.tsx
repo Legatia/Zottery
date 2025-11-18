@@ -9,7 +9,7 @@ export const VaultPage: React.FC = () => {
   const [userShares, setUserShares] = useState<bigint>(BigInt(0));
   const [totalAssets, setTotalAssets] = useState<bigint>(BigInt(0));
   const [leverage, setLeverage] = useState<number>(1);
-  const [totalYield, setTotalYield] = useState<bigint>(BigInt(0));
+  const [_totalYield, setTotalYield] = useState<bigint>(BigInt(0));
   const [apy, setApy] = useState<number>(0);
   const [deployedCapital, setDeployedCapital] = useState<bigint>(BigInt(0));
   const [prizePool, setPrizePool] = useState<bigint>(BigInt(0));

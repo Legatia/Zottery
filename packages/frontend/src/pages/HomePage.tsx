@@ -215,7 +215,7 @@ export default function HomePage() {
               <div className="draw-info-card full-width">
                 <div className="draw-info-label">Winning Numbers</div>
                 <div className="winning-numbers">
-                  {draw.winningNumbers.map((num, idx) => (
+                  {draw.winningNumbers.map((num: number, idx: number) => (
                     <span key={idx} className="winning-ball">{num}</span>
                   ))}
                 </div>

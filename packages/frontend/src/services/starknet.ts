@@ -1,4 +1,3 @@
-import { connect, disconnect } from 'get-starknet-core';
 import { Contract, Provider, Account, RpcProvider } from 'starknet';
 
 export interface StarknetWallet {
@@ -31,26 +30,23 @@ export class StarknetService {
 
   async connectWallet(): Promise<StarknetWallet> {
     try {
-      // Use get-starknet to connect to available wallets (ArgentX, Braavos, etc.)
-      const starknet = await connect({
-        modalMode: 'alwaysAsk',
-        modalTheme: 'dark',
-      });
+      // Use window.starknet for wallet connection (ArgentX, Braavos)
+      const windowStarknet = (window as any).starknet;
 
-      if (!starknet || !starknet.isConnected) {
-        throw new Error('Failed to connect wallet');
+      if (!windowStarknet) {
+        throw new Error('No Starknet wallet detected. Please install ArgentX or Braavos.');
       }
 
-      await starknet.enable();
+      await windowStarknet.enable();
 
-      if (!starknet.account) {
+      if (!windowStarknet.account) {
         throw new Error('No account found');
       }
 
       this.wallet = {
-        address: starknet.selectedAddress || '',
-        account: starknet.account,
-        provider: starknet.provider,
+        address: windowStarknet.selectedAddress || '',
+        account: windowStarknet.account,
+        provider: windowStarknet.provider,
       };
 
       console.log('✅ Wallet connected:', this.wallet.address);
@@ -63,7 +59,6 @@ export class StarknetService {
   }
 
   async disconnectWallet(): Promise<void> {
-    await disconnect();
     this.wallet = null;
     console.log('👋 Wallet disconnected');
   }

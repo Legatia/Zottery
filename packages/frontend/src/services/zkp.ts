@@ -168,16 +168,15 @@ export class ZKPService {
    * This uses a simple hash. In production with full circuits,
    * this would use Poseidon hash to match the circuit.
    */
-  computeNullifier(claimKey: string): string {
+  async computeNullifier(claimKey: string): Promise<string> {
     // Simple hash for now
     // In production, should use poseidon hash from circomlibjs
     const encoder = new TextEncoder();
     const data = encoder.encode(claimKey);
 
-    return crypto.subtle.digest('SHA-256', data).then(hashBuffer => {
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }).then(hash => hash);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   /**
