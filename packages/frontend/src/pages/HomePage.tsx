@@ -42,20 +42,125 @@ export default function HomePage() {
       <section className="hero">
         <h1>Win Anonymously with Zottery</h1>
         <p className="hero-subtitle">
-          The first truly private lottery. Buy tickets, win prizes, and claim anonymously using Zcash.
+          The first truly private lottery. Choose your mode: traditional Zcash lottery or DeFi yield vault.
         </p>
-        <div className="hero-buttons">
-          <Link to="/purchase" className="btn-cta">
-            Buy Tickets Now
-          </Link>
-          <Link to="/claim" className="btn-secondary">
-            Claim Prize
-          </Link>
+      </section>
+
+      {/* Lottery Modes Section */}
+      <section className="lottery-modes">
+        <h2>Choose Your Lottery Mode</h2>
+        <div className="modes-grid">
+
+          {/* Traditional Zcash Lottery */}
+          <div className="mode-card traditional">
+            <div className="mode-header">
+              <div className="mode-icon">🎫</div>
+              <h3>Traditional Lottery</h3>
+              <div className="mode-badge classic">Classic</div>
+            </div>
+
+            <p className="mode-description">
+              Buy tickets directly with ZEC. Simple, straightforward lottery.
+            </p>
+
+            <div className="mode-features">
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Pay per ticket with ZEC</span>
+              </div>
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Traditional prize pool</span>
+              </div>
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Simple & direct</span>
+              </div>
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Anonymous claims</span>
+              </div>
+            </div>
+
+            <div className="mode-stats">
+              <div className="mode-stat">
+                <div className="stat-label">Network</div>
+                <div className="stat-value">Zcash</div>
+              </div>
+              <div className="mode-stat">
+                <div className="stat-label">Risk</div>
+                <div className="stat-value">Pay per ticket</div>
+              </div>
+            </div>
+
+            <Link to="/purchase" className="mode-button traditional-btn">
+              Buy Tickets →
+            </Link>
+          </div>
+
+          {/* DeFi Vault Lottery */}
+          <div className="mode-card vault featured">
+            <div className="mode-header">
+              <div className="mode-icon">💎</div>
+              <h3>DeFi Vault Lottery</h3>
+              <div className="mode-badge new">NEW</div>
+            </div>
+
+            <p className="mode-description">
+              Deposit USDC, earn leveraged yield, and keep your principal. No-loss lottery!
+            </p>
+
+            <div className="mode-features">
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Keep your principal</span>
+              </div>
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Earn 20% of yield</span>
+              </div>
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>5x-10x leveraged prizes</span>
+              </div>
+              <div className="mode-feature">
+                <span className="check">✓</span>
+                <span>Cross-chain privacy</span>
+              </div>
+            </div>
+
+            <div className="mode-stats">
+              <div className="mode-stat">
+                <div className="stat-label">Network</div>
+                <div className="stat-value">Starknet + Zcash</div>
+              </div>
+              <div className="mode-stat">
+                <div className="stat-label">Risk</div>
+                <div className="stat-value">No loss (keep principal)</div>
+              </div>
+            </div>
+
+            <Link to="/vault" className="mode-button vault-btn">
+              Open Vault →
+            </Link>
+          </div>
+        </div>
+
+        <div className="mode-comparison">
+          <h3>Which Mode is Right for You?</h3>
+          <div className="comparison-grid">
+            <div className="comparison-item">
+              <strong>🎫 Traditional:</strong> Perfect if you have ZEC and want a simple, direct lottery experience
+            </div>
+            <div className="comparison-item">
+              <strong>💎 DeFi Vault:</strong> Perfect if you want to earn yield while playing and keep your deposit safe
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="current-draw">
-        <h2>Current Draw</h2>
+        <h2>Current Traditional Draw</h2>
         {loading && (
           <div className="center">
             <div className="loading"></div>
