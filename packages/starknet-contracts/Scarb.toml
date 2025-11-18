@@ -1,0 +1,17 @@
+[package]
+name = "zottery_starknet"
+version = "0.1.0"
+edition = "2024_07"
+
+[dependencies]
+starknet = ">=2.5.0"
+
+[cairo]
+sierra-replace-ids = true
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+
+[tool.snforge]
+exit_first = true

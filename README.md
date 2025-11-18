@@ -1,25 +1,41 @@
-# Zottery - Anonymous Lottery System
+# Zottery - Anonymous Lottery System with DeFi Vaults
 
-**Zottery** is a privacy-preserving lottery system that leverages Zcash for anonymous prize claims. Built with traditional lottery mechanics but enhanced with zero-knowledge proofs, Zottery allows winners to claim prizes without revealing their identity.
+**Zottery** is a privacy-preserving lottery system that combines DeFi yield strategies on Starknet with anonymous prize claims on Zcash. Users deposit funds into leveraged vaults, automatically enter lottery draws, and claim prizes privately via cross-chain zero-knowledge proofs.
 
-## Features
+## 🚀 NEW: Leveraged Lottery Vaults
+
+Zottery now features **cross-chain DeFi integration** between Starknet and Zcash:
+
+- **💰 Deposit USDC/ETH** into leveraged vaults on Starknet
+- **📈 Earn leveraged yield** (1x-10x) through DeFi strategies
+- **🎫 Auto-entry** to lottery draws based on deposit amount
+- **🔒 Anonymous claiming** via cross-chain bridge to Zcash
+- **⚡ Zero-knowledge proofs** verify winners without revealing identity
+
+**See [LEVERAGED_VAULTS_ARCHITECTURE.md](./LEVERAGED_VAULTS_ARCHITECTURE.md) for full details.**
+
+## Core Features
 
 - **🎫 Traditional Lottery Mechanics**: Pick or get assigned 6 numbers from 1-49
 - **🔒 Complete Anonymity**: Claim prizes without revealing identity using zero-knowledge proofs
 - **⚡ Zcash Integration**: Leverages Zcash shielded transactions for private payouts
+- **🏦 DeFi Vaults**: Deposit, earn yield, and enter draws automatically
+- **🌉 Cross-Chain**: Starknet for DeFi, Zcash for privacy
 - **🎲 Provably Fair**: Verifiable random number generation for transparent draws
 - **🎯 Multiple Prize Tiers**: Win with 3, 4, 5, or all 6 matching numbers
-- **💻 Modern Stack**: TypeScript, React, Node.js, SQLite
+- **💻 Modern Stack**: TypeScript, React, Cairo, Starknet, Zcash
 
 ## Architecture
 
-The system consists of three main packages:
+The system consists of five main packages:
 
 - **Backend** (`packages/backend`): Node.js + Express server handling ticket purchases, draws, and claims
-- **Frontend** (`packages/frontend`): React application for user interaction
+- **Frontend** (`packages/frontend`): React application with Starknet wallet integration
+- **Starknet Contracts** (`packages/starknet-contracts`): Cairo smart contracts for vaults and lottery
+- **Relayer** (`packages/relayer`): Cross-chain bridge service between Starknet and Zcash
 - **Shared** (`packages/shared`): Common types and utilities used across packages
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed system design.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the original Zcash-only design and [LEVERAGED_VAULTS_ARCHITECTURE.md](./LEVERAGED_VAULTS_ARCHITECTURE.md) for the new cross-chain system.
 
 ## How It Works
 

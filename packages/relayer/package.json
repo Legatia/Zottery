@@ -1,0 +1,27 @@
+{
+  "name": "@zottery/relayer",
+  "version": "1.0.0",
+  "description": "Cross-chain relayer for Starknet <> Zcash lottery payouts",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "watch": "nodemon --exec ts-node src/index.ts"
+  },
+  "dependencies": {
+    "starknet": "^5.24.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "pg": "^8.11.0",
+    "redis": "^4.6.0",
+    "winston": "^3.11.0",
+    "snarkjs": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0",
+    "nodemon": "^3.0.0"
+  }
+}

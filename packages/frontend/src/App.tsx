@@ -3,6 +3,8 @@ import HomePage from './pages/HomePage'
 import PurchasePage from './pages/PurchasePage'
 import ClaimPageEnhanced from './pages/ClaimPageEnhanced'
 import DrawsPage from './pages/DrawsPage'
+import { VaultPage } from './pages/VaultPage'
+import { StarknetWalletButton } from './components/StarknetWalletButton'
 import './App.css'
 
 function App() {
@@ -16,16 +18,21 @@ function App() {
           </Link>
           <nav className="nav">
             <Link to="/" className="nav-link">Home</Link>
+            <Link to="/vault" className="nav-link">Vault</Link>
             <Link to="/purchase" className="nav-link">Buy Tickets</Link>
             <Link to="/claim" className="nav-link">Claim Prize</Link>
             <Link to="/draws" className="nav-link">Past Draws</Link>
           </nav>
+          <div className="header-wallet">
+            <StarknetWalletButton />
+          </div>
         </div>
       </header>
 
       <main className="main">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/vault" element={<VaultPage />} />
           <Route path="/purchase" element={<PurchasePage />} />
           <Route path="/claim" element={<ClaimPageEnhanced />} />
           <Route path="/draws" element={<DrawsPage />} />
