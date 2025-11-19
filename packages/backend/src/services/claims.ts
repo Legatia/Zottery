@@ -43,8 +43,8 @@ export class ClaimService {
     recipientAddress: string
   ): Promise<string> {
     // Validate inputs
-    if (prizeMatches < 3 || prizeMatches > 6) {
-      throw new Error('Invalid prize matches. Must be between 3 and 6');
+    if (prizeMatches < 3 || prizeMatches > 5) {
+      throw new Error('Invalid prize matches. Must be between 3 and 5');
     }
 
     // Check if nullifier already used (double-claim prevention)

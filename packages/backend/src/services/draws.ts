@@ -16,7 +16,7 @@ import {
 } from '@zottery/shared';
 
 export class DrawService {
-  constructor(private db: Database) {}
+  constructor(private db: Database) { }
 
   /**
    * Create a new draw
@@ -30,7 +30,6 @@ export class DrawService {
       prizePool: 0,
       status: 'open',
       prizesDistributed: {
-        match6: { winners: 0, amountEach: 0 },
         match5: { winners: 0, amountEach: 0 },
         match4: { winners: 0, amountEach: 0 },
         match3: { winners: 0, amountEach: 0 },
@@ -118,7 +117,6 @@ export class DrawService {
 
     // Count winners for each tier
     const winnerCounts = {
-      match6: 0,
       match5: 0,
       match4: 0,
       match3: 0,
@@ -127,8 +125,7 @@ export class DrawService {
     for (const ticket of tickets) {
       const matches = countMatches(ticket.numbers, draw.winningNumbers);
 
-      if (matches === 6) winnerCounts.match6++;
-      else if (matches === 5) winnerCounts.match5++;
+      if (matches === 5) winnerCounts.match5++;
       else if (matches === 4) winnerCounts.match4++;
       else if (matches === 3) winnerCounts.match3++;
     }
@@ -137,10 +134,7 @@ export class DrawService {
     const prizePool = draw.prizePool * LOTTERY_CONFIG.PRIZE_DISTRIBUTION.PRIZES;
 
     const prizesDistributed: PrizeDistribution = {
-      match6: {
-        winners: winnerCounts.match6,
-        amountEach: calculatePrizeAmount(6, draw.prizePool, winnerCounts.match6),
-      },
+      match6: { winners: 0, amountEach: 0 }, // Legacy/Unused
       match5: {
         winners: winnerCounts.match5,
         amountEach: calculatePrizeAmount(5, draw.prizePool, winnerCounts.match5),
@@ -288,9 +282,7 @@ export class DrawService {
     const matches = countMatches(numbers, draw.winningNumbers);
 
     let prizeAmount = 0;
-    if (matches === 6) {
-      prizeAmount = draw.prizesDistributed.match6.amountEach;
-    } else if (matches === 5) {
+    if (matches === 5) {
       prizeAmount = draw.prizesDistributed.match5.amountEach;
     } else if (matches === 4) {
       prizeAmount = draw.prizesDistributed.match4.amountEach;
@@ -310,7 +302,6 @@ export class DrawService {
       throw new Error('Draw not found');
     }
 
-    if (matches === 6) return draw.prizesDistributed.match6.amountEach;
     if (matches === 5) return draw.prizesDistributed.match5.amountEach;
     if (matches === 4) return draw.prizesDistributed.match4.amountEach;
     if (matches === 3) return draw.prizesDistributed.match3.amountEach;

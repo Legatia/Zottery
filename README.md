@@ -12,7 +12,7 @@ Zottery now features **cross-chain DeFi integration** between Starknet and Zcash
 - **🔒 Anonymous claiming** via cross-chain bridge to Zcash
 - **⚡ Zero-knowledge proofs** verify winners without revealing identity
 
-**See [LEVERAGED_VAULTS_ARCHITECTURE.md](./LEVERAGED_VAULTS_ARCHITECTURE.md) for full details.**
+**See [LEVERAGED_VAULTS_ARCHITECTURE.md](./docs/LEVERAGED_VAULTS_ARCHITECTURE.md) for full details.**
 
 ## Core Features
 
@@ -35,7 +35,7 @@ The system consists of five main packages:
 - **Relayer** (`packages/relayer`): Cross-chain bridge service between Starknet and Zcash
 - **Shared** (`packages/shared`): Common types and utilities used across packages
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the original Zcash-only design and [LEVERAGED_VAULTS_ARCHITECTURE.md](./LEVERAGED_VAULTS_ARCHITECTURE.md) for the new cross-chain system.
+See [ARCHITECTURE.md](./docs/ARCHITECTURE.md) for the original Zcash-only design and [LEVERAGED_VAULTS_ARCHITECTURE.md](./docs/LEVERAGED_VAULTS_ARCHITECTURE.md) for the new cross-chain system.
 
 ## How It Works
 
@@ -224,7 +224,7 @@ cp build/claimVerifier.wasm ../packages/frontend/public/circuits/
 cp build/claimVerifier_final.zkey ../packages/frontend/public/circuits/
 ```
 
-See **[ZKP_SETUP.md](./ZKP_SETUP.md)** for detailed instructions.
+See **[ZKP_SETUP.md](./docs/ZKP_SETUP.md)** for detailed instructions.
 
 ### Production Build
 
@@ -361,8 +361,12 @@ Zottery/
 │       │   └── types.ts      # Common interfaces
 │       └── package.json
 │
-├── ARCHITECTURE.md           # System design docs
-├── ZKP_SETUP.md              # ZKP setup guide
+├── docs/                 # Documentation
+│   ├── ARCHITECTURE.md
+│   ├── LEVERAGED_VAULTS_ARCHITECTURE.md
+│   ├── LEVERAGED_VAULTS_SETUP.md
+│   ├── TESTNET_TESTING_GUIDE.md
+│   └── ZKP_SETUP.md
 ├── package.json              # Root package
 └── README.md                 # This file
 ```

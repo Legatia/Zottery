@@ -67,20 +67,16 @@ export default function PurchasePage() {
           <h3>Prize Structure</h3>
           <div className="prize-tiers">
             <div className="prize-tier">
-              <span className="tier-matches">Match 6/6</span>
+              <span className="tier-matches">Match 5/5</span>
               <span className="tier-prize">60% of prize pool</span>
             </div>
             <div className="prize-tier">
-              <span className="tier-matches">Match 5/6</span>
+              <span className="tier-matches">Match 4/5</span>
               <span className="tier-prize">20% of prize pool</span>
             </div>
             <div className="prize-tier">
-              <span className="tier-matches">Match 4/6</span>
+              <span className="tier-matches">Match 3/5</span>
               <span className="tier-prize">15% of prize pool</span>
-            </div>
-            <div className="prize-tier">
-              <span className="tier-matches">Match 3/6</span>
-              <span className="tier-prize">5% of prize pool</span>
             </div>
           </div>
           <p className="prize-note">

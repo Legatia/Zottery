@@ -56,3 +56,5 @@ circuits/powersOfTau*.ptau
 *.pem
 *.key
 *.cert
+# Documentation
+!docs/
