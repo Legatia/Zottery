@@ -13,7 +13,7 @@ export class TicketService {
   constructor(
     private db: Database,
     private zcash: ZcashService
-  ) {}
+  ) { }
 
   /**
    * Process a ticket purchase
@@ -135,9 +135,12 @@ export class TicketService {
         }
 
         try {
-          // Create ticket with random numbers
-          await this.purchaseTicket(tx.txid, tx.fromAddress || '', tx.amount);
-          console.log(`Processed transaction ${tx.txid} -> ticket created`);
+          // Parse numbers from memo if present
+          const numbers = this.parseMemo(tx.memo);
+
+          // Create ticket
+          await this.purchaseTicket(tx.txid, tx.fromAddress || '', tx.amount, numbers);
+          console.log(`Processed transaction ${tx.txid} -> ticket created${numbers ? ' with custom numbers' : ''}`);
 
           // Mark as processed
           this.db.updatePendingTransaction(tx.txid, tx.confirmations, true);
@@ -152,7 +155,12 @@ export class TicketService {
         const tx = await this.zcash.getTransaction(ptx.tx_id);
         if (tx && tx.confirmations >= MIN_CONFIRMATIONS) {
           try {
-            await this.purchaseTicket(ptx.tx_id, ptx.from_address, ptx.amount);
+            // We need to re-fetch memo here if it wasn't stored in pending tx
+            // But pending tx table might not store memo. 
+            // For now, let's assume we can get it from tx again.
+            const numbers = this.parseMemo(tx.memo);
+
+            await this.purchaseTicket(ptx.tx_id, ptx.from_address, ptx.amount, numbers);
             this.db.updatePendingTransaction(ptx.tx_id, tx.confirmations, true);
           } catch (error: any) {
             console.error(`Error processing pending transaction ${ptx.tx_id}:`, error.message);
@@ -164,6 +172,42 @@ export class TicketService {
     } catch (error) {
       console.error('Error in processIncomingTransactions:', error);
     }
+  }
+
+  /**
+   * Parse memo string to extract lottery numbers
+   * Format: NUMS:1,2,3,4,5
+   */
+  private parseMemo(memoHex?: string): number[] | undefined {
+    if (!memoHex) return undefined;
+    try {
+      // Remove 0x prefix if present
+      const cleanHex = memoHex.replace(/^0x/, '');
+
+      // Convert hex to string
+      let str = '';
+      for (let i = 0; i < cleanHex.length; i += 2) {
+        const code = parseInt(cleanHex.substr(i, 2), 16);
+        if (code === 0) break;
+        str += String.fromCharCode(code);
+      }
+
+      // Check for NUMS: prefix
+      if (str.startsWith('NUMS:')) {
+        const numsStr = str.substring(5);
+        const nums = numsStr.split(',').map(n => parseInt(n.trim()));
+
+        // Validate numbers
+        if (validateNumbers(nums)) {
+          return nums;
+        } else {
+          console.warn(`Invalid numbers in memo: ${numsStr}`);
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing memo:', e);
+    }
+    return undefined;
   }
 
   /**

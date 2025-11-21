@@ -1,17 +1,15 @@
 #[starknet::contract]
-pub mod LotteryManager {
+mod LotteryManager {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess, StoragePointerWriteAccess};
+    use starknet::storage::{Map, StoragePointerReadAccess, StoragePointerWriteAccess, StorageMapReadAccess, StorageMapWriteAccess};
+    use zottery_starknet::interfaces::{ILotteryManager, Draw, TicketCommitment};
     use core::poseidon::poseidon_hash_span;
-    use super::super::interfaces::{ILotteryManager, Draw, TicketCommitment};
 
     #[storage]
     struct Storage {
-        // Core
         owner: ContractAddress,
         vault: ContractAddress,
-
-        // Draw management
+        
         current_draw_id: u64,
         draws: Map<u64, Draw>,
         current_prize_pool: u256,  // Accumulated yield for next draw
@@ -32,34 +30,34 @@ pub mod LotteryManager {
 
     #[event]
     #[derive(Drop, starknet::Event)]
-    pub enum Event {
+    enum Event {
         TicketRegistered: TicketRegistered,
         DrawExecuted: DrawExecuted,
         PrizePoolUpdated: PrizePoolUpdated,
     }
 
     #[derive(Drop, starknet::Event)]
-    pub struct TicketRegistered {
-        pub ticket_id: u64,
-        pub commitment: felt252,
-        pub draw_id: u64,
-        pub user: ContractAddress,
+    struct TicketRegistered {
+        ticket_id: u64,
+        commitment: felt252,
+        draw_id: u64,
+        user: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
-    pub struct DrawExecuted {
-        pub draw_id: u64,
-        pub winning_commitment: felt252,
-        pub prize_pool: u256,
-        pub ticket_count: u64,
-        pub timestamp: u64,
+    struct DrawExecuted {
+        draw_id: u64,
+        winning_commitment: felt252,
+        prize_pool: u256,
+        ticket_count: u64,
+        timestamp: u64,
     }
 
     #[derive(Drop, starknet::Event)]
-    pub struct PrizePoolUpdated {
-        pub amount_added: u256,
-        pub new_total: u256,
-        pub timestamp: u64,
+    struct PrizePoolUpdated {
+        amount_added: u256,
+        new_total: u256,
+        timestamp: u64,
     }
 
     #[constructor]

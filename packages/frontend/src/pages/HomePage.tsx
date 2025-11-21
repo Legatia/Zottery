@@ -42,7 +42,7 @@ export default function HomePage() {
       <section className="hero">
         <h1>Win Anonymously with Zottery</h1>
         <p className="hero-subtitle">
-          The first truly private lottery. Choose your mode: traditional Zcash lottery or DeFi yield vault.
+          The first truly private lottery. Traditional Zcash lottery or DeFi yield vault.
         </p>
       </section>
 
@@ -270,7 +270,7 @@ export default function HomePage() {
             <div className="step-content">
               <h3>Buy Tickets</h3>
               <p>
-                Send ZEC to the lottery address and receive your ticket with 6 random numbers.
+                Choose 5 numbers when purchasing ticket with ZEC.
                 Save your claim key securely!
               </p>
             </div>
@@ -299,7 +299,7 @@ export default function HomePage() {
           <div className="step">
             <div className="step-number">4</div>
             <div className="step-content">
-              <h3>Claim Anonymously</h3>
+              <h3>Anonymous Claim</h3>
               <p>
                 Generate a zero-knowledge proof and claim your prize to a shielded address.
                 No identity required!

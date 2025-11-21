@@ -69,3 +69,43 @@ pub struct Claim {
     pub claimed_at: u64,
     pub zcash_tx_hash: felt252,
 }
+
+#[starknet::interface]
+pub trait IERC20<TContractState> {
+    fn name(self: @TContractState) -> felt252;
+    fn symbol(self: @TContractState) -> felt252;
+    fn decimals(self: @TContractState) -> u8;
+    fn total_supply(self: @TContractState) -> u256;
+    fn balance_of(self: @TContractState, account: ContractAddress) -> u256;
+    fn allowance(self: @TContractState, owner: ContractAddress, spender: ContractAddress) -> u256;
+    fn transfer(ref self: TContractState, recipient: ContractAddress, amount: u256) -> bool;
+    fn transfer_from(ref self: TContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool;
+    fn approve(ref self: TContractState, spender: ContractAddress, amount: u256) -> bool;
+}
+
+#[starknet::interface]
+pub trait IZotterySwap<TContractState> {
+    fn get_reserves(self: @TContractState) -> (u256, u256);
+    fn add_liquidity(ref self: TContractState, amount0_desired: u256, amount1_desired: u256) -> u256;
+    fn remove_liquidity(ref self: TContractState, liquidity: u256) -> (u256, u256);
+    fn swap(ref self: TContractState, amount0_out: u256, amount1_out: u256, to: ContractAddress);
+    fn swap_exact_tokens_for_tokens(
+        ref self: TContractState, 
+        amount_in: u256, 
+        amount_out_min: u256, 
+        path: Array<ContractAddress>, 
+        to: ContractAddress
+    ) -> Array<u256>;
+}
+
+#[starknet::interface]
+pub trait IStZEC<TContractState> {
+    fn mint(ref self: TContractState, recipient: ContractAddress, amount: u256);
+    fn burn(ref self: TContractState, amount: u256);
+    fn burn_to_zcash(ref self: TContractState, amount: u256, z_address: Array<felt252>);
+}
+
+#[starknet::interface]
+pub trait IClaimVerifierAdmin<TContractState> {
+    fn authorize_relayer(ref self: TContractState, relayer: ContractAddress, authorized: bool);
+}

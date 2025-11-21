@@ -272,6 +272,7 @@ export interface ZcashTransaction {
   toAddress: string;
   blockHeight?: number;
   timestamp?: number;
+  memo?: string;            // Optional memo for shielded transactions
 }
 
 /**

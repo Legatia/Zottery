@@ -2,7 +2,9 @@
 pub mod LeveragedVault {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
     use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess, StoragePointerWriteAccess};
-    use super::super::interfaces::{ILeveragedVault};
+    use zottery_starknet::interfaces::ILeveragedVault;
+    use zottery_starknet::interfaces::ILotteryManager;
+    use zottery_starknet::interfaces::IERC20;
 
     #[storage]
     struct Storage {
