@@ -79,6 +79,36 @@ if [ -z "$CLAIM_CLASS_HASH" ]; then
 fi
 echo "✅ ClaimVerifier declared: $CLAIM_CLASS_HASH"
 
+# Declare StZEC
+echo "📝 Declaring StZEC..."
+ST_ZEC_CLASS_HASH=$(starkli declare \
+  target/dev/zottery_starknet_StZEC.contract_class.json \
+  --rpc $RPC_URL \
+  --account $ACCOUNT_FILE \
+  --keystore $KEYSTORE_FILE \
+  2>&1 | grep "Class hash declared" | awk '{print $NF}')
+
+if [ -z "$ST_ZEC_CLASS_HASH" ]; then
+    echo "❌ Failed to declare StZEC"
+    exit 1
+fi
+echo "✅ StZEC declared: $ST_ZEC_CLASS_HASH"
+
+# Declare ZotterySwap
+echo "📝 Declaring ZotterySwap..."
+SWAP_CLASS_HASH=$(starkli declare \
+  target/dev/zottery_starknet_ZotterySwap.contract_class.json \
+  --rpc $RPC_URL \
+  --account $ACCOUNT_FILE \
+  --keystore $KEYSTORE_FILE \
+  2>&1 | grep "Class hash declared" | awk '{print $NF}')
+
+if [ -z "$SWAP_CLASS_HASH" ]; then
+    echo "❌ Failed to declare ZotterySwap"
+    exit 1
+fi
+echo "✅ ZotterySwap declared: $SWAP_CLASS_HASH"
+
 echo ""
 echo "================================"
 echo "Step 2: Deploy Contracts"
@@ -129,6 +159,41 @@ if [ -z "$LOTTERY_ADDRESS" ]; then
 fi
 echo "✅ LotteryManager deployed: $LOTTERY_ADDRESS"
 
+# Deploy StZEC
+echo "🏗️  Deploying StZEC..."
+ST_ZEC_ADDRESS=$(starkli deploy \
+  $ST_ZEC_CLASS_HASH \
+  $DEPLOYER_ADDRESS \
+  --rpc $RPC_URL \
+  --account $ACCOUNT_FILE \
+  --keystore $KEYSTORE_FILE \
+  2>&1 | grep "Contract deployed" | awk '{print $NF}')
+
+if [ -z "$ST_ZEC_ADDRESS" ]; then
+    echo "❌ Failed to deploy StZEC"
+    exit 1
+fi
+echo "✅ StZEC deployed: $ST_ZEC_ADDRESS"
+
+# Deploy ZotterySwap
+echo "🏗️  Deploying ZotterySwap..."
+# Constructor: token0, token1, lottery_manager
+SWAP_ADDRESS=$(starkli deploy \
+  $SWAP_CLASS_HASH \
+  $TOKEN_ADDRESS \
+  $ST_ZEC_ADDRESS \
+  $LOTTERY_ADDRESS \
+  --rpc $RPC_URL \
+  --account $ACCOUNT_FILE \
+  --keystore $KEYSTORE_FILE \
+  2>&1 | grep "Contract deployed" | awk '{print $NF}')
+
+if [ -z "$SWAP_ADDRESS" ]; then
+    echo "❌ Failed to deploy ZotterySwap"
+    exit 1
+fi
+echo "✅ ZotterySwap deployed: $SWAP_ADDRESS"
+
 # Update vault with lottery manager address
 echo "🔗 Updating LeveragedVault with LotteryManager address..."
 # This requires an update function in the vault contract
@@ -166,6 +231,8 @@ echo "-------------------"
 echo "LeveragedVault:    $VAULT_ADDRESS"
 echo "LotteryManager:    $LOTTERY_ADDRESS"
 echo "ClaimVerifier:     $CLAIM_ADDRESS"
+echo "StZEC:             $ST_ZEC_ADDRESS"
+echo "ZotterySwap:       $SWAP_ADDRESS"
 echo ""
 echo "Class Hashes:"
 echo "-------------"

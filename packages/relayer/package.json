@@ -10,13 +10,13 @@
     "watch": "nodemon --exec ts-node src/index.ts"
   },
   "dependencies": {
-    "starknet": "^5.24.0",
+    "starknet": "^6.11.0",
     "axios": "^1.6.0",
     "dotenv": "^16.3.1",
     "pg": "^8.11.0",
     "redis": "^4.6.0",
     "winston": "^3.11.0",
-    "snarkjs": "^0.7.0"
+    "snarkjs": "^0.7.4"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

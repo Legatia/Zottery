@@ -439,7 +439,43 @@ zcash-cli -testnet z_listreceivedbyaddress YOUR_Z_ADDRESS
 
 ---
 
-### Test 7: Withdrawal
+### Test 7: Zottery Swap & Bridge (New)
+
+**Objective:** Test the end-to-end flow of bridging ZEC and swapping.
+
+**Prerequisites:**
+- Zcash Testnet Wallet (e.g., YWallet, Zecwallet Lite)
+- Starknet Wallet (ArgentX/Braavos)
+- Testnet ZEC (from faucet)
+
+**Step 1: Deposit ZEC (Mint stZEC)**
+1. Open your Zcash wallet.
+2. Send **1 ZEC** to the **Vault Z-Address** (found in Relayer logs or Frontend Bridge tab).
+3. **CRITICAL:** In the **Memo** field, paste your **Starknet Address** (e.g., `0x123...`).
+4. Send the transaction.
+5. Wait for Relayer to detect deposit (check logs).
+6. **Result:** You should receive `1.0 stZEC` in your Starknet wallet.
+
+**Step 2: Swap stZEC for USDC**
+1. Go to the **Swap** page in the Frontend (`/swap`).
+2. Select **stZEC** -> **USDC**.
+3. Enter amount: `0.5`.
+4. Click **Swap**.
+5. Approve transaction.
+6. **Result:** Your `stZEC` balance decreases, `USDC` balance increases.
+
+**Step 3: Withdraw ZEC (Burn stZEC)**
+1. Go to the **Bridge** tab in the Frontend (`/swap`).
+2. Enter Amount: `0.4`.
+3. Enter **Destination Z-Address** (your Zcash wallet address).
+4. Click **Withdraw to Zcash**.
+5. Approve transaction (this calls `stZEC.burn_to_zcash`).
+6. Wait for Relayer to detect withdrawal event.
+7. **Result:** You receive `0.4 ZEC` (minus fees) in your Zcash wallet.
+
+---
+
+### Test 8: Withdrawal (Vault)
 
 **Objective:** Withdraw funds from vault.
 

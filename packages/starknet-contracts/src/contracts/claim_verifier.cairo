@@ -2,7 +2,7 @@
 pub mod ClaimVerifier {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
     use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess, StoragePointerWriteAccess};
-    use super::super::interfaces::{IClaimVerifier, Claim};
+    use zottery_starknet::interfaces::{IClaimVerifier, Claim, ILotteryManager, IClaimVerifierAdmin};
 
     #[storage]
     struct Storage {
@@ -187,7 +187,7 @@ pub mod ClaimVerifier {
 
     // Admin functions
     #[abi(embed_v0)]
-    impl AdminImpl of super::super::interfaces::IClaimVerifierAdmin<ContractState> {
+    impl AdminImpl of IClaimVerifierAdmin<ContractState> {
         fn authorize_relayer(ref self: ContractState, relayer: ContractAddress, authorized: bool) {
             self._only_owner();
             self.authorized_relayers.write(relayer, authorized);
@@ -198,10 +198,4 @@ pub mod ClaimVerifier {
             });
         }
     }
-}
-
-// Additional admin interface
-#[starknet::interface]
-pub trait IClaimVerifierAdmin<TContractState> {
-    fn authorize_relayer(ref self: TContractState, relayer: ContractAddress, authorized: bool);
 }

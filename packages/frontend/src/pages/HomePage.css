@@ -17,6 +17,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -37,9 +38,12 @@
 }
 
 @keyframes glow {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.4));
   }
+
   50% {
     filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.6));
   }
@@ -68,6 +72,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -226,9 +231,12 @@
 }
 
 @keyframes shimmer {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: brightness(1);
   }
+
   50% {
     filter: brightness(1.2);
   }
@@ -263,18 +271,36 @@
   animation: ballEntrance 0.6s ease both;
 }
 
-.winning-ball:nth-child(1) { animation-delay: 0.1s; }
-.winning-ball:nth-child(2) { animation-delay: 0.2s; }
-.winning-ball:nth-child(3) { animation-delay: 0.3s; }
-.winning-ball:nth-child(4) { animation-delay: 0.4s; }
-.winning-ball:nth-child(5) { animation-delay: 0.5s; }
-.winning-ball:nth-child(6) { animation-delay: 0.6s; }
+.winning-ball:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.winning-ball:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.winning-ball:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.winning-ball:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.winning-ball:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.winning-ball:nth-child(6) {
+  animation-delay: 0.6s;
+}
 
 @keyframes ballEntrance {
   from {
     opacity: 0;
     transform: scale(0) rotate(-180deg);
   }
+
   to {
     opacity: 1;
     transform: scale(1) rotate(0deg);
@@ -348,9 +374,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -383,7 +412,7 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  max-width: 800px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -634,9 +663,12 @@
 }
 
 @keyframes badgePulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
   }

@@ -7,9 +7,9 @@
 // ============================================================================
 
 export const LOTTERY_CONFIG = {
-  NUMBERS_PER_TICKET: 6,
+  NUMBERS_PER_TICKET: 5,
   MIN_NUMBER: 1,
-  MAX_NUMBER: 49,
+  MAX_NUMBER: 32,
   MIN_MATCHES_FOR_PRIZE: 3,
   TICKET_PRICE: 1, // ZEC
 
@@ -21,11 +21,19 @@ export const LOTTERY_CONFIG = {
   },
 
   // Prize tiers (percentage of prize pool)
+  // Prize tiers (percentage of prize pool) - Legacy/Pure Lottery
   PRIZE_TIERS: {
-    6: 0.60, // 60% for 6/6 matches
-    5: 0.20, // 20% for 5/6 matches
-    4: 0.15, // 15% for 4/6 matches
-    3: 0.05, // 5% for 3/6 matches
+    5: 0.60, // 60% for 5/5 matches
+    4: 0.20, // 20% for 4/5 matches
+    3: 0.15, // 15% for 3/5 matches
+  },
+
+  // Yield-at-Risk Multipliers
+  YIELD_MULTIPLIERS: {
+    JACKPOT: 50, // 5/5 Ordered
+    TIER_2: 10,  // 5/5 Any Order
+    TIER_3: 5,   // 4/5 Any Order
+    TIER_4: 1,   // 3/5 Any Order
   }
 } as const;
 
@@ -64,7 +72,6 @@ export interface Draw {
 export type DrawStatus = 'open' | 'closed' | 'drawn' | 'completed';
 
 export interface PrizeDistribution {
-  match6: { winners: number; amountEach: number };
   match5: { winners: number; amountEach: number };
   match4: { winners: number; amountEach: number };
   match3: { winners: number; amountEach: number };
@@ -265,6 +272,7 @@ export interface ZcashTransaction {
   toAddress: string;
   blockHeight?: number;
   timestamp?: number;
+  memo?: string;            // Optional memo for shielded transactions
 }
 
 /**

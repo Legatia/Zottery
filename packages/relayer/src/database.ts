@@ -19,6 +19,13 @@ export interface FailedPayoutRecord {
   timestamp: number;
 }
 
+export interface DepositRecord {
+  txid: string;
+  amount: number;
+  recipient: string;
+  timestamp: number;
+}
+
 export class Database {
   private pool: Pool | null = null;
   private logger: Logger;
@@ -88,6 +95,17 @@ export class Database {
         nullifier TEXT UNIQUE NOT NULL,
         z_address TEXT NOT NULL,
         submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS deposits (
+        id SERIAL PRIMARY KEY,
+        txid TEXT UNIQUE NOT NULL,
+        amount NUMERIC NOT NULL,
+        recipient TEXT NOT NULL,
+        timestamp BIGINT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
@@ -196,6 +214,29 @@ export class Database {
     );
 
     this.logger.info(`✅ Submitted z-address for nullifier ${nullifier}`);
+  }
+
+  async isDepositProcessed(txid: string): Promise<boolean> {
+    if (!this.pool) throw new Error('Database not connected');
+
+    const result = await this.pool.query(
+      'SELECT 1 FROM deposits WHERE txid = $1',
+      [txid]
+    );
+
+    return result.rows.length > 0;
+  }
+
+  async recordDeposit(deposit: DepositRecord): Promise<void> {
+    if (!this.pool) throw new Error('Database not connected');
+
+    await this.pool.query(
+      `INSERT INTO deposits (txid, amount, recipient, timestamp)
+       VALUES ($1, $2, $3, $4)`,
+      [deposit.txid, deposit.amount, deposit.recipient, deposit.timestamp]
+    );
+
+    this.logger.info(`✅ Recorded deposit ${deposit.txid}`);
   }
 
   async getAllPayouts(): Promise<PayoutRecord[]> {

@@ -83,31 +83,51 @@ export class ZcashService {
    */
   async getReceivedTransactions(minConfirmations: number = 0): Promise<ZcashTransaction[]> {
     try {
-      // List transactions received by the lottery address
-      const result = await this.rpcCall('listreceivedbyaddress', [
-        minConfirmations,
-        false, // includeEmpty
-        false, // includeWatchonly
-      ]);
+      const isShielded = this.config.lotteryAddress.startsWith('z');
 
-      // Filter for lottery address
-      const lotteryTxs = result.filter((item: any) =>
-        item.address === this.config.lotteryAddress && item.amount > 0
-      );
+      if (isShielded) {
+        // List transactions received by the shielded lottery address
+        const result = await this.rpcCall('z_listreceivedbyaddress', [
+          this.config.lotteryAddress,
+          minConfirmations,
+        ]);
 
-      // Get detailed info for each transaction
-      const transactions: ZcashTransaction[] = [];
-      for (const item of lotteryTxs) {
-        const txIds = item.txids || [];
-        for (const txid of txIds) {
-          const tx = await this.getTransaction(txid);
-          if (tx) {
-            transactions.push(tx);
+        return result.map((item: any) => ({
+          txid: item.txid,
+          confirmations: item.confirmations || 0,
+          amount: item.amount,
+          toAddress: this.config.lotteryAddress,
+          memo: item.memo, // Hex encoded memo
+          // z_listreceivedbyaddress might not return blockheight/time directly in all versions
+          // but we can fetch if needed. For now, basic info is enough.
+        }));
+      } else {
+        // List transactions received by the transparent lottery address
+        const result = await this.rpcCall('listreceivedbyaddress', [
+          minConfirmations,
+          false, // includeEmpty
+          false, // includeWatchonly
+        ]);
+
+        // Filter for lottery address
+        const lotteryTxs = result.filter((item: any) =>
+          item.address === this.config.lotteryAddress && item.amount > 0
+        );
+
+        // Get detailed info for each transaction
+        const transactions: ZcashTransaction[] = [];
+        for (const item of lotteryTxs) {
+          const txIds = item.txids || [];
+          for (const txid of txIds) {
+            const tx = await this.getTransaction(txid);
+            if (tx) {
+              transactions.push(tx);
+            }
           }
         }
-      }
 
-      return transactions;
+        return transactions;
+      }
     } catch (error) {
       console.error('Error getting received transactions:', error);
       return [];
@@ -124,6 +144,7 @@ export class ZcashService {
       // Find vout that pays to lottery address
       let amount = 0;
       let toAddress = this.config.lotteryAddress;
+      let memo: string | undefined;
 
       if (result.details && Array.isArray(result.details)) {
         const receivedDetail = result.details.find(
@@ -131,6 +152,7 @@ export class ZcashService {
         );
         if (receivedDetail) {
           amount = Math.abs(receivedDetail.amount);
+          memo = receivedDetail.memo;
         }
       }
 
@@ -141,6 +163,7 @@ export class ZcashService {
         toAddress,
         blockHeight: result.blockheight,
         timestamp: result.time,
+        memo,
       };
     } catch (error) {
       console.error(`Error getting transaction ${txid}:`, error);

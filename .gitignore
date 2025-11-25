@@ -8,7 +8,9 @@ pnpm-debug.log*
 # Build outputs
 dist/
 build/
+target/
 *.tsbuildinfo
+build_output.txt
 
 # Environment variables
 .env
@@ -56,3 +58,5 @@ circuits/powersOfTau*.ptau
 *.pem
 *.key
 *.cert
+# Documentation
+!docs/

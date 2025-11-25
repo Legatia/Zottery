@@ -11,8 +11,9 @@ Zottery now features **cross-chain DeFi integration** between Starknet and Zcash
 - **🎫 Auto-entry** to lottery draws based on deposit amount
 - **🔒 Anonymous claiming** via cross-chain bridge to Zcash
 - **⚡ Zero-knowledge proofs** verify winners without revealing identity
+- 🔄 **Swap & Bridge** ZEC <-> stZEC and swap for USDC directly in the app
 
-**See [LEVERAGED_VAULTS_ARCHITECTURE.md](./LEVERAGED_VAULTS_ARCHITECTURE.md) for full details.**
+**See [LEVERAGED_VAULTS_ARCHITECTURE.md](./docs/LEVERAGED_VAULTS_ARCHITECTURE.md) for full details.**
 
 ## Core Features
 
@@ -23,6 +24,7 @@ Zottery now features **cross-chain DeFi integration** between Starknet and Zcash
 - **🌉 Cross-Chain**: Starknet for DeFi, Zcash for privacy
 - **🎲 Provably Fair**: Verifiable random number generation for transparent draws
 - **🎯 Multiple Prize Tiers**: Win with 3, 4, 5, or all 6 matching numbers
+- **💱 Built-in DEX**: Swap and bridge assets directly within the app
 - **💻 Modern Stack**: TypeScript, React, Cairo, Starknet, Zcash
 
 ## Architecture
@@ -31,11 +33,11 @@ The system consists of five main packages:
 
 - **Backend** (`packages/backend`): Node.js + Express server handling ticket purchases, draws, and claims
 - **Frontend** (`packages/frontend`): React application with Starknet wallet integration
-- **Starknet Contracts** (`packages/starknet-contracts`): Cairo smart contracts for vaults and lottery
+- **Starknet Contracts** (`packages/starknet-contracts`): Cairo smart contracts for vaults, lottery, and swap
 - **Relayer** (`packages/relayer`): Cross-chain bridge service between Starknet and Zcash
 - **Shared** (`packages/shared`): Common types and utilities used across packages
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the original Zcash-only design and [LEVERAGED_VAULTS_ARCHITECTURE.md](./LEVERAGED_VAULTS_ARCHITECTURE.md) for the new cross-chain system.
+See [ARCHITECTURE.md](./docs/ARCHITECTURE.md) for the original Zcash-only design and [LEVERAGED_VAULTS_ARCHITECTURE.md](./docs/LEVERAGED_VAULTS_ARCHITECTURE.md) for the new cross-chain system.
 
 ## How It Works
 
@@ -68,6 +70,12 @@ The system verifies the proof and sends prizes to shielded z-addresses.
 - **Match 5/6**: 20% of prize pool
 - **Match 4/6**: 15% of prize pool
 - **Match 3/6**: 5% of prize pool
+
+### 5. Swap & Bridge
+
+Users can easily move funds between Zcash and Starknet:
+- **Bridge**: Deposit ZEC to mint stZEC (Starknet ZEC) or burn stZEC to withdraw ZEC.
+- **Swap**: Trade stZEC for USDC to enter the lottery, or swap winnings back to ZEC for privacy.
 
 ## Prerequisites
 
@@ -224,7 +232,7 @@ cp build/claimVerifier.wasm ../packages/frontend/public/circuits/
 cp build/claimVerifier_final.zkey ../packages/frontend/public/circuits/
 ```
 
-See **[ZKP_SETUP.md](./ZKP_SETUP.md)** for detailed instructions.
+See **[ZKP_SETUP.md](./docs/ZKP_SETUP.md)** for detailed instructions.
 
 ### Production Build
 
@@ -361,8 +369,24 @@ Zottery/
 │       │   └── types.ts      # Common interfaces
 │       └── package.json
 │
-├── ARCHITECTURE.md           # System design docs
-├── ZKP_SETUP.md              # ZKP setup guide
+├── packages/starknet-contracts/ # Cairo smart contracts
+│   ├── src/
+│   │   ├── contracts/        # Contract modules
+│   │   │   ├── leveraged_vault.cairo
+│   │   │   ├── lottery_manager.cairo
+│   │   │   ├── claim_verifier.cairo
+│   │   │   ├── st_zec.cairo
+│   │   │   └── zottery_swap.cairo
+│   │   ├── lib.cairo
+│   │   └── interfaces.cairo
+│   └── Scarb.toml
+│
+├── docs/                 # Documentation
+│   ├── ARCHITECTURE.md
+│   ├── LEVERAGED_VAULTS_ARCHITECTURE.md
+│   ├── LEVERAGED_VAULTS_SETUP.md
+│   ├── TESTNET_TESTING_GUIDE.md
+│   └── ZKP_SETUP.md
 ├── package.json              # Root package
 └── README.md                 # This file
 ```

@@ -7,9 +7,11 @@ export default function PurchasePage() {
   const [lotteryAddress, setLotteryAddress] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
 
   useEffect(() => {
     loadLotteryAddress();
+    generateRandomSelection();
   }, []);
 
   const loadLotteryAddress = async () => {
@@ -28,64 +30,114 @@ export default function PurchasePage() {
     }
   };
 
+  const generateRandomSelection = () => {
+    const numbers: number[] = [];
+    const available = Array.from({ length: LOTTERY_CONFIG.MAX_NUMBER }, (_, i) => i + 1);
+
+    for (let i = 0; i < LOTTERY_CONFIG.NUMBERS_PER_TICKET; i++) {
+      const randomIndex = Math.floor(Math.random() * available.length);
+      numbers.push(available[randomIndex]);
+      available.splice(randomIndex, 1);
+    }
+
+    setSelectedNumbers(numbers.sort((a, b) => a - b));
+  };
+
+  const toggleNumber = (num: number) => {
+    if (selectedNumbers.includes(num)) {
+      setSelectedNumbers(selectedNumbers.filter(n => n !== num));
+    } else {
+      if (selectedNumbers.length < LOTTERY_CONFIG.NUMBERS_PER_TICKET) {
+        setSelectedNumbers([...selectedNumbers, num].sort((a, b) => a - b));
+      }
+    }
+  };
+
+  const getMemoString = () => {
+    if (selectedNumbers.length !== LOTTERY_CONFIG.NUMBERS_PER_TICKET) return '';
+    return `NUMS:${selectedNumbers.join(',')}`;
+  };
+
   const copyAddress = () => {
     navigator.clipboard.writeText(lotteryAddress);
     alert('Address copied to clipboard!');
+  };
+
+  const copyMemo = () => {
+    navigator.clipboard.writeText(getMemoString());
+    alert('Memo copied to clipboard!');
   };
 
   return (
     <div className="purchase-page">
       <div className="page-header">
         <h1>Buy Lottery Tickets</h1>
-        <p>Send ZEC to purchase tickets for the current draw</p>
+        <p>Select your numbers and send ZEC to purchase</p>
       </div>
 
-      <div className="purchase-info">
-        <div className="info-card">
-          <h3>How to Purchase</h3>
-          <ol className="purchase-steps">
-            <li>
-              <strong>Send ZEC to the lottery address below</strong>
-              <p>Minimum: {LOTTERY_CONFIG.TICKET_PRICE} ZEC per ticket</p>
-            </li>
-            <li>
-              <strong>Wait for confirmation</strong>
-              <p>Your transaction needs at least 1 confirmation</p>
-            </li>
-            <li>
-              <strong>Your ticket will be automatically created</strong>
-              <p>Random numbers will be assigned to your ticket</p>
-            </li>
-            <li>
-              <strong>Save your claim information</strong>
-              <p>You'll need this to claim prizes anonymously!</p>
-            </li>
-          </ol>
+      <div className="purchase-content">
+        <div className="number-selection-section">
+          <div className="section-header">
+            <h2>1. Choose Your Numbers</h2>
+            <button onClick={generateRandomSelection} className="random-button">
+              Random Pick 🎲
+            </button>
+          </div>
+
+          <div className="numbers-grid">
+            {Array.from({ length: LOTTERY_CONFIG.MAX_NUMBER }, (_, i) => i + 1).map(num => (
+              <button
+                key={num}
+                className={`number-btn ${selectedNumbers.includes(num) ? 'selected' : ''}`}
+                onClick={() => toggleNumber(num)}
+                disabled={!selectedNumbers.includes(num) && selectedNumbers.length >= LOTTERY_CONFIG.NUMBERS_PER_TICKET}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+
+          <div className="selection-status">
+            Selected: {selectedNumbers.length}/{LOTTERY_CONFIG.NUMBERS_PER_TICKET}
+          </div>
         </div>
 
-        <div className="info-card">
-          <h3>Prize Structure</h3>
-          <div className="prize-tiers">
-            <div className="prize-tier">
-              <span className="tier-matches">Match 6/6</span>
-              <span className="tier-prize">60% of prize pool</span>
-            </div>
-            <div className="prize-tier">
-              <span className="tier-matches">Match 5/6</span>
-              <span className="tier-prize">20% of prize pool</span>
-            </div>
-            <div className="prize-tier">
-              <span className="tier-matches">Match 4/6</span>
-              <span className="tier-prize">15% of prize pool</span>
-            </div>
-            <div className="prize-tier">
-              <span className="tier-matches">Match 3/6</span>
-              <span className="tier-prize">5% of prize pool</span>
+        <div className="purchase-info">
+          <div className="info-card">
+            <h3>2. Send Payment</h3>
+            <ol className="purchase-steps">
+              <li>
+                <strong>Send ZEC to the lottery address</strong>
+                <p>Price: {LOTTERY_CONFIG.TICKET_PRICE} ZEC per ticket</p>
+              </li>
+              <li>
+                <strong>IMPORTANT: Include the Memo</strong>
+                <p>You MUST include the generated memo below to register your numbers!</p>
+              </li>
+              <li>
+                <strong>Wait for confirmation</strong>
+                <p>Your ticket will be created automatically</p>
+              </li>
+            </ol>
+          </div>
+
+          <div className="info-card">
+            <h3>Prize Structure</h3>
+            <div className="prize-tiers">
+              <div className="prize-tier">
+                <span className="tier-matches">Match 5/5</span>
+                <span className="tier-prize">Jackpot (50x Yield)</span>
+              </div>
+              <div className="prize-tier">
+                <span className="tier-matches">Match 4/5</span>
+                <span className="tier-prize">Tier 3 (5x Yield)</span>
+              </div>
+              <div className="prize-tier">
+                <span className="tier-matches">Match 3/5</span>
+                <span className="tier-prize">Tier 4 (1x Yield)</span>
+              </div>
             </div>
           </div>
-          <p className="prize-note">
-            Prizes are split equally among winners in each tier
-          </p>
         </div>
       </div>
 
@@ -102,24 +154,41 @@ export default function PurchasePage() {
       )}
 
       {lotteryAddress && (
-        <div className="lottery-address-section">
-          <h2>Lottery Address</h2>
-          <div className="address-card">
-            <div className="address-label">Send ZEC to this address:</div>
-            <div className="address-container">
-              <code className="address">{lotteryAddress}</code>
-              <button onClick={copyAddress} className="copy-button">
-                Copy
-              </button>
+        <div className="payment-details-section">
+          <h2>Payment Details</h2>
+
+          <div className="payment-grid">
+            <div className="address-card">
+              <div className="address-label">Lottery Address (Shielded)</div>
+              <div className="address-container">
+                <code className="address">{lotteryAddress}</code>
+                <button onClick={copyAddress} className="copy-button">Copy</button>
+              </div>
             </div>
-            <div className="address-info">
-              <p>
-                <strong>Amount:</strong> {LOTTERY_CONFIG.TICKET_PRICE} ZEC or more
-              </p>
-              <p className="info-note">
-                Multiple of {LOTTERY_CONFIG.TICKET_PRICE} ZEC = multiple tickets
-              </p>
+
+            <div className="memo-card">
+              <div className="address-label">Memo (Required)</div>
+              <div className="address-container">
+                <code className="memo-text">{getMemoString() || 'Select 5 numbers...'}</code>
+                <button
+                  onClick={copyMemo}
+                  className="copy-button"
+                  disabled={selectedNumbers.length !== LOTTERY_CONFIG.NUMBERS_PER_TICKET}
+                >
+                  Copy
+                </button>
+              </div>
             </div>
+          </div>
+
+          <div className="cli-instructions">
+            <h3>Zcash CLI Command</h3>
+            <div className="code-block">
+              <code>
+                zcash-cli z_sendmany "FROM_ADDRESS" '[{`{`}"address": "{lotteryAddress}", "amount": {LOTTERY_CONFIG.TICKET_PRICE}, "memo": "{Buffer.from(getMemoString()).toString('hex')}"{`}`}]'
+              </code>
+            </div>
+            <p className="cli-note">Note: Memo must be hex-encoded for CLI</p>
           </div>
         </div>
       )}
@@ -129,60 +198,7 @@ export default function PurchasePage() {
           <h3>⚠️ Important: Save Your Claim Key</h3>
           <p>
             After your transaction is confirmed, your ticket will be created automatically.
-            Currently, this is a development version where tickets are tracked by transaction ID.
-          </p>
-          <p>
-            <strong>In the full version:</strong> You will receive a unique claim key that you must save securely.
-            Without this key, you cannot claim prizes even if you win! Store it in a password manager or write it down.
-          </p>
-        </div>
-      </div>
-
-      <div className="instructions-section">
-        <h2>Using Zcash CLI</h2>
-        <div className="code-block">
-          <code>
-            zcash-cli sendtoaddress {lotteryAddress || '<lottery-address>'} {LOTTERY_CONFIG.TICKET_PRICE}
-          </code>
-        </div>
-
-        <h3 className="section-subtitle">Check Transaction Status</h3>
-        <div className="code-block">
-          <code>
-            zcash-cli gettransaction &lt;txid&gt;
-          </code>
-        </div>
-      </div>
-
-      <div className="faq-section">
-        <h2>Frequently Asked Questions</h2>
-
-        <div className="faq-item">
-          <h3>Can I choose my own numbers?</h3>
-          <p>
-            Currently, numbers are randomly assigned. A future version will allow custom number selection.
-          </p>
-        </div>
-
-        <div className="faq-item">
-          <h3>How long until my ticket is created?</h3>
-          <p>
-            Your ticket will be created automatically after 1 blockchain confirmation, typically within a few minutes.
-          </p>
-        </div>
-
-        <div className="faq-item">
-          <h3>Can I buy multiple tickets?</h3>
-          <p>
-            Yes! Send multiples of {LOTTERY_CONFIG.TICKET_PRICE} ZEC to purchase multiple tickets in a single transaction.
-          </p>
-        </div>
-
-        <div className="faq-item">
-          <h3>Is my purchase anonymous?</h3>
-          <p>
-            Purchases are made from transparent addresses, so they are visible on the blockchain.
-            However, <strong>prize claiming is completely anonymous</strong> using zero-knowledge proofs and shielded addresses.
+            You will need your private key or view key to prove ownership and claim prizes.
           </p>
         </div>
       </div>
