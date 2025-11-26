@@ -134,7 +134,6 @@ export class DrawService {
     const prizePool = draw.prizePool * LOTTERY_CONFIG.PRIZE_DISTRIBUTION.PRIZES;
 
     const prizesDistributed: PrizeDistribution = {
-      match6: { winners: 0, amountEach: 0 }, // Legacy/Unused
       match5: {
         winners: winnerCounts.match5,
         amountEach: calculatePrizeAmount(5, draw.prizePool, winnerCounts.match5),
